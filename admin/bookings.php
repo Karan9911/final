@@ -76,13 +76,23 @@ $bookings = getAllBookings();
                                 <th>Therapist</th>
                                 <th>Appointment</th>
                                 <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Payment Status</th>
                                 <th>Status</th>
                                 <th>Created</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($bookings as $booking): ?>
+                            <?php foreach ($bookings as $booking): 
+                                // Determine payment method and status
+                                $paymentMethod = $booking['payment_id'] ? 'Online' : 'Pay at Spa';
+                                $paymentStatus = $booking['payment_id'] ? 
+                                    ucfirst($booking['payment_status'] ?? 'completed') : 
+                                    ($booking['status'] === 'completed' ? 'Paid' : 'Pending');
+                                $paymentBadgeClass = $booking['payment_id'] ? 'success' : 
+                                    ($booking['status'] === 'completed' ? 'info' : 'warning');
+                            ?>
                                 <tr>
                                     <td>
                                         <span class="badge bg-light text-dark">#<?php echo $booking['id']; ?></span>
@@ -111,6 +121,19 @@ $bookings = getAllBookings();
                                         <span class="fw-bold text-success"><?php echo formatPrice($booking['total_amount']); ?></span>
                                     </td>
                                     <td>
+                                        <span class="badge bg-<?php echo $booking['payment_id'] ? 'primary' : 'secondary'; ?>">
+                                            <?php echo $paymentMethod; ?>
+                                        </span>
+                                        <?php if ($booking['payment_id']): ?>
+                                            <br><small class="text-muted">Razorpay</small>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-<?php echo $paymentBadgeClass; ?>">
+                                            <?php echo $paymentStatus; ?>
+                                        </span>
+                                    </td>
+                                    <td>
                                         <span class="badge bg-<?php 
                                             echo match($booking['status']) {
                                                 'confirmed' => 'success',
@@ -127,43 +150,48 @@ $bookings = getAllBookings();
                                         <small class="text-muted"><?php echo timeAgo($booking['created_at']); ?></small>
                                     </td>
                                     <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-gear"></i>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-info" onclick="viewBooking(<?php echo $booking['id']; ?>)" title="View Details">
+                                                <i class="bi bi-eye"></i>
                                             </button>
-                                            <ul class="dropdown-menu">
-                                                <li><h6 class="dropdown-header">Update Status</h6></li>
-                                                <li>
-                                                    <form method="POST" style="display: inline;">
-                                                        <input type="hidden" name="action" value="update_status">
-                                                        <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
-                                                        <input type="hidden" name="status" value="confirmed">
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="bi bi-check-circle text-success me-2"></i>Confirm
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="POST" style="display: inline;">
-                                                        <input type="hidden" name="action" value="update_status">
-                                                        <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
-                                                        <input type="hidden" name="status" value="completed">
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="bi bi-check-all text-info me-2"></i>Complete
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="POST" style="display: inline;">
-                                                        <input type="hidden" name="action" value="update_status">
-                                                        <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
-                                                        <input type="hidden" name="status" value="cancelled">
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="bi bi-x-circle text-danger me-2"></i>Cancel
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="Update Status">
+                                                    <i class="bi bi-gear"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><h6 class="dropdown-header">Update Status</h6></li>
+                                                    <li>
+                                                        <form method="POST" style="display: inline;">
+                                                            <input type="hidden" name="action" value="update_status">
+                                                            <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
+                                                            <input type="hidden" name="status" value="confirmed">
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="bi bi-check-circle text-success me-2"></i>Confirm
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="POST" style="display: inline;">
+                                                            <input type="hidden" name="action" value="update_status">
+                                                            <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
+                                                            <input type="hidden" name="status" value="completed">
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="bi bi-check-all text-info me-2"></i>Complete
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="POST" style="display: inline;">
+                                                            <input type="hidden" name="action" value="update_status">
+                                                            <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
+                                                            <input type="hidden" name="status" value="cancelled">
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="bi bi-x-circle text-danger me-2"></i>Cancel
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -176,4 +204,68 @@ $bookings = getAllBookings();
     </div>
 </div>
 
-<?php include 'includes/admin_footer.php'; ?>
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-calendar-check me-2"></i>Booking Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="bookingDetailsModalBody">
+                <!-- Content loaded via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php 
+$extraScripts = '<script>
+    function viewBooking(id) {
+        // Show loading state
+        document.getElementById("bookingDetailsModalBody").innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Loading booking details...</p>
+            </div>
+        `;
+        
+        // Show modal immediately with loading state
+        new bootstrap.Modal(document.getElementById("bookingDetailsModal")).show();
+        
+        // Fetch booking details
+        fetch("get_booking_details.php?id=" + id)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("bookingDetailsModalBody").innerHTML = data.html;
+                } else {
+                    document.getElementById("bookingDetailsModalBody").innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Error loading booking details: ${data.message}
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("bookingDetailsModalBody").innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Error loading booking details. Please try again.
+                    </div>
+                `;
+            });
+    }
+</script>';
+
+include 'includes/admin_footer.php'; 
+?>
