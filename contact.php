@@ -123,44 +123,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <h3 class="mb-4">Get in Touch</h3>
                     
                     <div class="contact-item">
-                        <div class="contact-icon">
+                        <div class="contact-icon ml-0">
                             <i class="bi bi-geo-alt-fill"></i>
                         </div>
                         <div class="contact-details">
                             <h5>Visit Our Spa</h5>
-                            <p>123 Wellness Street<br>Spa City, SC 12345<br>Near Central Park</p>
+                            <p>A-35 Block A2, Rajouri Garden New Delhi, 110027</p>
                         </div>
                     </div>
                     
                     <div class="contact-item">
-                        <div class="contact-icon">
+                        <div class="contact-icon" style="margin-left:0px;">
                             <i class="bi bi-telephone-fill"></i>
                         </div>
                         <div class="contact-details">
                             <h5>Call Us</h5>
-                            <p><a href="tel:+919876543210">+91 98765 43210</a><br>Available 9 AM - 8 PM<br>7 Days a Week</p>
+                            <p><a href="tel:+919876543210">+91 9560656913</a><br>Available 9 AM - 8 PM<br>7 Days a Week</p>
                         </div>
                     </div>
                     
                     <div class="contact-item">
-                        <div class="contact-icon">
+                        <div class="contact-icon" style="margin-left:0px;">
                             <i class="bi bi-envelope-fill"></i>
                         </div>
                         <div class="contact-details">
                             <h5>Email Us</h5>
-                            <p><a href="mailto:info@serenityspa.com">info@serenityspa.com</a><br>We'll respond within 24 hours</p>
+                            <p><a href="mailto:info@serenityspa.com">info@hammammensspa.com</a><br>We'll respond within 24 hours</p>
                         </div>
                     </div>
                     
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="bi bi-whatsapp"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h5>WhatsApp</h5>
-                            <p><a href="https://wa.me/919876543210" target="_blank">+91 98765 43210</a><br>Quick responses<br>Available 24/7</p>
-                        </div>
-                    </div>
+                    <!--<div class="contact-item">-->
+                    <!--    <div class="contact-icon" style="margin-left:0px;">-->
+                    <!--        <i class="bi bi-whatsapp"></i>-->
+                    <!--    </div>-->
+                    <!--    <div class="contact-details">-->
+                    <!--        <h5>WhatsApp</h5>-->
+                    <!--        <p><a href="https://wa.me/919876543210" target="_blank">+91 9560656913</a><br>Quick responses<br>Available 24/7</p>-->
+                    <!--    </div>-->
+                    <!--</div>-->
                 </div>
                 
                 <!-- Business Hours -->
@@ -191,8 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <h3 class="text-center mb-4">Find Us on Map</h3>
         <div class="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.5441234567!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDM2JzUwLjAiTiA3N8KwMTInMzIuNCJF!5e0!3m2!1sen!2sin!4v1234567890" 
-                    width="100%" height="400" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d896950.8557408227!2d76.08547210693362!3d28.578341281413785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2536f271a49%3A0x78a11fefbcdfe3cb!2sHammam%20Mens%20Spa%20-%20Male%20To%20Male%20Spa%20Center%20In%20Lajpat%20Nagar!5e0!3m2!1sen!2sin!4v1751393134808!5m2!1sen!2sin" width="100%" height="400" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </div>
 </section>

@@ -5,7 +5,7 @@
 }
 
 .admin-navbar {
-    background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+    background: linear-gradient(135deg, #cf0303 0%, #cf0303 100%);
     padding: 1rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: fixed;
@@ -29,7 +29,7 @@
 }
 
 .admin-container {
-    display: block;
+    display: flex;
     margin-top: 70px;
     min-height: calc(100vh - 70px);
 }
@@ -44,7 +44,6 @@
     height: calc(100vh - 70px);
     overflow-y: auto;
     transition: transform 0.3s ease;
-    z-index: 100;
 }
 
 .admin-sidebar.collapsed {
@@ -67,14 +66,14 @@
 
 .admin-sidebar .nav-link:hover {
     background-color: #f8f9fa;
-    color: #2E8B57;
-    border-left-color: #2E8B57;
+    color: #cf0303;
+    border-left-color: #cf0303;
 }
 
 .admin-sidebar .nav-link.active {
     background-color: #e8f5e8;
-    color: #2E8B57;
-    border-left-color: #2E8B57;
+    color: #cf0303;
+    border-left-color: #cf0303;
     font-weight: 600;
 }
 
@@ -87,7 +86,6 @@
 
 .admin-content {
     max-width: 100%;
-    margin-top: 20px;
 }
 
 /* Statistics Cards */
@@ -124,7 +122,7 @@
 .stat-number {
     font-size: 2rem;
     font-weight: 700;
-    color: #2E8B57;
+    color: #cf0303;
     display: block;
 }
 
@@ -156,13 +154,13 @@
 .quick-action-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    color: #2E8B57;
+    color: #cf0303;
     text-decoration: none;
 }
 
 .quick-action-card i {
     font-size: 2rem;
-    color: #2E8B57;
+    color: #cf0303;
 }
 
 .quick-action-card span {
@@ -224,7 +222,7 @@
 
 .lead-item:hover {
     background-color: #f8f9fa;
-    border-color: #2E8B57;
+    border-color: #cf0303;
 }
 
 /* Buttons */
@@ -236,12 +234,12 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #2E8B57, #3CB371);
+    background: linear-gradient(135deg, #cf0303, #3CB371);
     border: none;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #228B22, #2E8B57);
+    background: linear-gradient(135deg, #228B22, #cf0303);
     transform: translateY(-1px);
 }
 
@@ -254,7 +252,7 @@
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #2E8B57;
+    border-color: #cf0303;
     box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.15);
 }
 
@@ -376,12 +374,4 @@
 @keyframes slideIn {
     from { transform: translateX(-20px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
-}
-
-
-
-/*Custom CSs*/
-
-.white-icon {
-  filter: brightness(0) invert(1); /* turns black to white */
 }

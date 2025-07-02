@@ -10,35 +10,35 @@ $pageTitle = 'Home';
 $therapists = getAllTherapists();
 $services = getAllServices();
 
-// Get filter parameters for price block
-$priceFilter = $_GET['price_filter'] ?? 'monthly';
+// // Get filter parameters for price block
+// $priceFilter = $_GET['price_filter'] ?? 'monthly';
 
-// Calculate filtered stats
-$db = getDB();
-$dateCondition = '';
-switch ($priceFilter) {
-    case 'daily':
-        $dateCondition = "DATE(created_at) = CURDATE()";
-        break;
-    case 'monthly':
-        $dateCondition = "MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        break;
-    case 'yearly':
-        $dateCondition = "YEAR(created_at) = YEAR(CURRENT_DATE())";
-        break;
-}
+// // Calculate filtered stats
+// $db = getDB();
+// $dateCondition = '';
+// switch ($priceFilter) {
+//     case 'daily':
+//         $dateCondition = "DATE(created_at) = CURDATE()";
+//         break;
+//     case 'monthly':
+//         $dateCondition = "MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+//         break;
+//     case 'yearly':
+//         $dateCondition = "YEAR(created_at) = YEAR(CURRENT_DATE())";
+//         break;
+// }
 
-$stmt = $db->prepare("
-    SELECT SUM(total_amount) as revenue, COUNT(*) as bookings 
-    FROM bookings 
-    WHERE $dateCondition 
-    AND status IN ('confirmed', 'completed')
-");
-$stmt->execute();
-$priceStats = $stmt->fetch();
-$filteredRevenue = $priceStats['revenue'] ?? 0;
-$filteredBookings = $priceStats['bookings'] ?? 0;
-?>
+// $stmt = $db->prepare("
+//     SELECT SUM(total_amount) as revenue, COUNT(*) as bookings 
+//     FROM bookings 
+//     WHERE $dateCondition 
+//     AND status IN ('confirmed', 'completed')
+// ");
+// $stmt->execute();
+// $priceStats = $stmt->fetch();
+// $filteredRevenue = $priceStats['revenue'] ?? 0;
+// $filteredBookings = $priceStats['bookings'] ?? 0;
+// ?>
 
 <?php include 'includes/header.php'; ?>
 
@@ -71,25 +71,6 @@ $filteredBookings = $priceStats['bookings'] ?? 0;
 <!-- Stats Section with Price Filter -->
 <section class="py-5 bg-white">
     <div class="container">
-        <!-- Price Filter -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="fw-bold mb-0">Business Overview</h3>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <input type="radio" class="btn-check" name="priceFilter" id="daily" value="daily" <?php echo $priceFilter === 'daily' ? 'checked' : ''; ?>>
-                        <label class="btn btn-outline-primary" for="daily">Daily</label>
-                        
-                        <input type="radio" class="btn-check" name="priceFilter" id="monthly" value="monthly" <?php echo $priceFilter === 'monthly' ? 'checked' : ''; ?>>
-                        <label class="btn btn-outline-primary" for="monthly">Monthly</label>
-                        
-                        <input type="radio" class="btn-check" name="priceFilter" id="yearly" value="yearly" <?php echo $priceFilter === 'yearly' ? 'checked' : ''; ?>>
-                        <label class="btn btn-outline-primary" for="yearly">Yearly</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <div class="row g-4">
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card scale-in">
@@ -99,8 +80,8 @@ $filteredBookings = $priceStats['bookings'] ?? 0;
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card scale-in">
-                    <span class="stats-number" id="filteredBookings"><?php echo $filteredBookings; ?></span>
-                    <span class="stats-label" id="bookingsLabel"><?php echo ucfirst($priceFilter); ?> Bookings</span>
+                    <span class="stats-number">500+</span>
+                    <span class="stats-label">Happy Clients</span>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
@@ -111,8 +92,8 @@ $filteredBookings = $priceStats['bookings'] ?? 0;
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stats-card scale-in">
-                    <span class="stats-number" id="filteredRevenue"><?php echo formatPrice($filteredRevenue); ?></span>
-                    <span class="stats-label" id="revenueLabel"><?php echo ucfirst($priceFilter); ?> Revenue</span>
+                    <span class="stats-number">15+</span>
+                    <span class="stats-label">Years Experience</span>
                 </div>
             </div>
         </div>
@@ -275,43 +256,43 @@ $filteredBookings = $priceStats['bookings'] ?? 0;
 </section>
 
 <!-- Testimonials Section -->
-<section class="py-5 services-section">
-    <div class="container">
-        <h2 class="section-title display-5 fw-bold">What Our Clients Say</h2>
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="testimonial-card slide-up">
-                    <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150" 
-                         class="testimonial-avatar" alt="Client">
-                    <p class="mb-3">"Amazing experience! The therapists are highly skilled and the atmosphere is so relaxing. I feel completely rejuvenated after every session."</p>
-                    <h6 class="fw-bold">Sarah Johnson</h6>
-                    <small class="text-muted">Regular Client</small>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="testimonial-card slide-up">
-                    <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150" 
-                         class="testimonial-avatar" alt="Client">
-                    <p class="mb-3">"Professional service and excellent facilities. The deep tissue massage helped me recover from my sports injury. Highly recommended!"</p>
-                    <h6 class="fw-bold">Michael Chen</h6>
-                    <small class="text-muted">Athlete</small>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="testimonial-card slide-up">
-                    <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150" 
-                         class="testimonial-avatar" alt="Client">
-                    <p class="mb-3">"The aromatherapy sessions are divine! Perfect place to unwind and escape from daily stress. The staff is incredibly caring and professional."</p>
-                    <h6 class="fw-bold">Emma Davis</h6>
-                    <small class="text-muted">Business Executive</small>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section class="py-5 services-section">-->
+<!--    <div class="container">-->
+<!--        <h2 class="section-title display-5 fw-bold">What Our Clients Say</h2>-->
+<!--        <div class="row g-4">-->
+<!--            <div class="col-lg-4">-->
+<!--                <div class="testimonial-card slide-up">-->
+<!--                    <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150" -->
+<!--                         class="testimonial-avatar" alt="Client">-->
+<!--                    <p class="mb-3">"Amazing experience! The therapists are highly skilled and the atmosphere is so relaxing. I feel completely rejuvenated after every session."</p>-->
+<!--                    <h6 class="fw-bold">Sarah Johnson</h6>-->
+<!--                    <small class="text-muted">Regular Client</small>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-4">-->
+<!--                <div class="testimonial-card slide-up">-->
+<!--                    <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150" -->
+<!--                         class="testimonial-avatar" alt="Client">-->
+<!--                    <p class="mb-3">"Professional service and excellent facilities. The deep tissue massage helped me recover from my sports injury. Highly recommended!"</p>-->
+<!--                    <h6 class="fw-bold">Michael Chen</h6>-->
+<!--                    <small class="text-muted">Athlete</small>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-4">-->
+<!--                <div class="testimonial-card slide-up">-->
+<!--                    <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150" -->
+<!--                         class="testimonial-avatar" alt="Client">-->
+<!--                    <p class="mb-3">"The aromatherapy sessions are divine! Perfect place to unwind and escape from daily stress. The staff is incredibly caring and professional."</p>-->
+<!--                    <h6 class="fw-bold">Emma Davis</h6>-->
+<!--                    <small class="text-muted">Business Executive</small>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 <!-- Contact Section -->
-<section id="contact" class="py-5 bg-white">
+<section id="contact" class="py-5 services-section">
     <div class="container">
         <h2 class="section-title display-5 fw-bold">Get In Touch</h2>
         <div class="row g-4">

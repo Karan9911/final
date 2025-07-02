@@ -3,7 +3,7 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <h5 class="mb-4">
-                        <i class="bi bi-flower1 me-2"></i>Serenity Spa
+                        <img src="<?php echo SITE_URL; ?>/uploads/website/light-logo.png" width="150px">
                     </h5>
                     <p class="text-muted mb-4">Experience tranquility and rejuvenation with our professional spa services and expert therapists. Your wellness journey begins here.</p>
                     <div class="social-links">
@@ -16,10 +16,10 @@
                 <div class="col-lg-2 col-md-6">
                     <h6 class="mb-3">Quick Links</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a href="#therapists" class="text-decoration-none">Therapists</a></li>
-                        <li class="mb-2"><a href="#services" class="text-decoration-none">Services</a></li>
-                        <li class="mb-2"><a href="#contact" class="text-decoration-none">Contact</a></li>
+                        <li class="mb-2"><a href="<?php echo SITE_URL; ?>" class="text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="<?php echo SITE_URL; ?>/therapists" class="text-decoration-none">Therapists</a></li>
+                        <li class="mb-2"><a href="<?php echo SITE_URL; ?>/services" class="text-decoration-none">Services</a></li>
+                        <li class="mb-2"><a href="<?php echo SITE_URL; ?>/contact" class="text-decoration-none">Contact</a></li>
                         <li class="mb-2"><a href="<?php echo SITE_URL; ?>/admin/login.php" class="text-decoration-none">Admin</a></li>
                     </ul>
                 </div>
@@ -37,15 +37,15 @@
                     <h6 class="mb-3">Contact Info</h6>
                     <div class="mb-3">
                         <i class="bi bi-geo-alt me-2 text-primary"></i>
-                        <span class="text-muted">123 Wellness Street, Spa City, SC 12345</span>
+                        <span class="text-muted">A-35 Block A2, Rajouri Garden New Delhi, 110027</span>
                     </div>
                     <div class="mb-3">
                         <i class="bi bi-telephone me-2 text-primary"></i>
-                        <span class="text-muted">+91 98765 43210</span>
+                        <span class="text-muted">+91 9560656913</span>
                     </div>
                     <div class="mb-3">
                         <i class="bi bi-envelope me-2 text-primary"></i>
-                        <span class="text-muted">info@serenityspa.com</span>
+                        <span class="text-muted">info@hammammensspa.com</span>
                     </div>
                     <div class="mb-3">
                         <i class="bi bi-clock me-2 text-primary"></i>

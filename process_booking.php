@@ -10,6 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// // Validate CSRF token if implemented
+//   if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
+//      echo json_encode(['success' => false, 'message' => 'Invalid security token']);
+//      exit;
+//  }
+
 // Validate required fields
 $required_fields = ['therapist_id', 'full_name', 'email', 'phone', 'booking_date', 'booking_time', 'total_amount'];
 $errors = [];
@@ -77,10 +83,7 @@ if ($existing['count'] > 0) {
 }
 
 try {
-    // Check if payment is enabled
-    $paymentEnabled = isPaymentEnabled();
-    
-    // Create booking data
+    // Create booking
     $bookingData = [
         'therapist_id' => $therapist_id,
         'full_name' => $full_name,
@@ -92,30 +95,19 @@ try {
         'total_amount' => $total_amount
     ];
     
-    if ($paymentEnabled && $total_amount > 0) {
-        // Payment is enabled - redirect to payment gateway
+    $result = createBooking($bookingData);
+    
+    if ($result['success']) {
+        // Send confirmation email
+        sendBookingConfirmation($result['booking_id']);
+        
         echo json_encode([
-            'success' => true,
-            'payment_required' => true,
-            'message' => 'Redirecting to payment gateway...'
+            'success' => true, 
+            'message' => 'Booking confirmed successfully!',
+            'booking_id' => $result['booking_id']
         ]);
     } else {
-        // Payment is disabled - create booking directly
-        $result = createBooking($bookingData);
-        
-        if ($result['success']) {
-            // Send confirmation email
-            sendBookingConfirmation($result['booking_id']);
-            
-            echo json_encode([
-                'success' => true,
-                'payment_required' => false,
-                'message' => 'Booking confirmed successfully! Payment can be made at the spa.',
-                'booking_id' => $result['booking_id']
-            ]);
-        } else {
-            echo json_encode(['success' => false, 'message' => $result['message']]);
-        }
+        echo json_encode(['success' => false, 'message' => $result['message']]);
     }
     
 } catch (Exception $e) {

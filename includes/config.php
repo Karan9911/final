@@ -18,7 +18,7 @@ define('ALLOWED_TYPES', ['jpg', 'jpeg', 'png', 'webp']);
 // Razorpay configuration
 define('RAZORPAY_KEY_ID', 'rzp_test_YOUR_KEY_ID'); // Replace with your Razorpay Key ID
 define('RAZORPAY_KEY_SECRET', 'YOUR_KEY_SECRET'); // Replace with your Razorpay Key Secret
-define('RAZORPAY_ENABLED', true); // Set to false to disable payments
+define('RAZORPAY_ENABLED', false); // Set to false to disable payments
 
 // Email configuration (for future use)
 define('SMTP_HOST', 'localhost');

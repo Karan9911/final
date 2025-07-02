@@ -82,13 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="mb-0">Don't have an account? <a href="signup.php" class="text-primary">Sign up here</a></p>
                     </div>
                     
-                    <div class="text-center mt-4">
-                        <div class="alert alert-info">
-                            <strong>Demo Credentials:</strong><br>
-                            <strong>Admin:</strong> admin@spa.com / admin123<br>
-                            <strong>User:</strong> user@spa.com / user123
-                        </div>
-                    </div>
+                    <!--<div class="text-center mt-4">-->
+                    <!--    <div class="alert alert-info">-->
+                    <!--        <strong>Demo Credentials:</strong><br>-->
+                    <!--        <strong>Admin:</strong> admin@spa.com / admin123<br>-->
+                    <!--        <strong>User:</strong> user@spa.com / user123-->
+                    <!--    </div>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>

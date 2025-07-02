@@ -25,37 +25,6 @@ function validatePhone($phone) {
     return preg_match('/^[0-9]{10}$/', $phone);
 }
 
-// Settings functions
-function getSetting($key, $default = '') {
-    $db = getDB();
-    try {
-        $stmt = $db->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
-        $stmt->execute([$key]);
-        $result = $stmt->fetch();
-        return $result ? $result['setting_value'] : $default;
-    } catch (Exception $e) {
-        return $default;
-    }
-}
-
-function updateSetting($key, $value) {
-    $db = getDB();
-    try {
-        $stmt = $db->prepare("
-            INSERT INTO settings (setting_key, setting_value) 
-            VALUES (?, ?) 
-            ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)
-        ");
-        return $stmt->execute([$key, $value]);
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
-function isPaymentEnabled() {
-    return (bool)getSetting('payment_enabled', '1');
-}
-
 // Enhanced Location detection functions
 function detectUserLocation($ip = null) {
     if (!$ip) {
@@ -372,18 +341,14 @@ function getAllServices() {
     return $stmt->fetchAll();
 }
 
-// Enhanced booking functions with payment status
+// Booking functions
 function createBooking($data) {
     $db = getDB();
     
     try {
-        $paymentEnabled = isPaymentEnabled();
-        $status = $paymentEnabled ? 'pending' : 'pending';
-        $paymentStatus = $paymentEnabled ? 'pending' : 'cash';
-        
         $stmt = $db->prepare("
-            INSERT INTO bookings (therapist_id, full_name, email, phone, booking_date, booking_time, message, total_amount, payment_status, status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO bookings (therapist_id, full_name, email, phone, booking_date, booking_time, message, total_amount, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
         
         $result = $stmt->execute([
@@ -394,26 +359,24 @@ function createBooking($data) {
             $data['booking_date'],
             $data['booking_time'],
             $data['message'],
-            $data['total_amount'],
-            $paymentStatus,
-            $status
+            $data['total_amount']
         ]);
         
         if ($result) {
             $bookingId = $db->lastInsertId();
             
-            // Create lead entry with payment type
+            // Create lead entry
             createLead([
                 'type' => 'booking',
                 'therapist_id' => $data['therapist_id'],
                 'full_name' => $data['full_name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
-                'message' => ($data['message'] ?? '') . ($paymentEnabled ? '' : ' [Cash Payment]'),
+                'message' => $data['message'] ?? '',
                 'status' => 'new'
             ]);
             
-            return ['success' => true, 'booking_id' => $bookingId, 'payment_required' => $paymentEnabled];
+            return ['success' => true, 'booking_id' => $bookingId];
         }
     } catch (Exception $e) {
         return ['success' => false, 'message' => $e->getMessage()];
@@ -485,17 +448,10 @@ function createInquiry($data) {
     return ['success' => false, 'message' => 'Inquiry submission failed'];
 }
 
-// Enhanced Razorpay functions with settings integration
+// Razorpay functions
 function createRazorpayOrder($amount, $currency = 'INR') {
-    if (!isPaymentEnabled()) {
+    if (!RAZORPAY_ENABLED) {
         return ['success' => false, 'message' => 'Payment gateway is disabled'];
-    }
-    
-    $keyId = getSetting('razorpay_key_id', RAZORPAY_KEY_ID);
-    $keySecret = getSetting('razorpay_key_secret', RAZORPAY_KEY_SECRET);
-    
-    if (empty($keyId) || empty($keySecret)) {
-        return ['success' => false, 'message' => 'Payment gateway not configured'];
     }
     
     $url = 'https://api.razorpay.com/v1/orders';
@@ -513,7 +469,7 @@ function createRazorpayOrder($amount, $currency = 'INR') {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'Authorization: Basic ' . base64_encode($keyId . ':' . $keySecret)
+        'Authorization: Basic ' . base64_encode(RAZORPAY_KEY_ID . ':' . RAZORPAY_KEY_SECRET)
     ]);
     
     $response = curl_exec($ch);
@@ -529,12 +485,11 @@ function createRazorpayOrder($amount, $currency = 'INR') {
 }
 
 function verifyRazorpayPayment($paymentId, $orderId, $signature) {
-    if (!isPaymentEnabled()) {
+    if (!RAZORPAY_ENABLED) {
         return false;
     }
     
-    $keySecret = getSetting('razorpay_key_secret', RAZORPAY_KEY_SECRET);
-    $expectedSignature = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
+    $expectedSignature = hash_hmac('sha256', $orderId . '|' . $paymentId, RAZORPAY_KEY_SECRET);
     return hash_equals($expectedSignature, $signature);
 }
 
@@ -558,8 +513,7 @@ function sendBookingConfirmation($bookingId) {
         $message .= "Therapist: {$booking['therapist_name']}\n";
         $message .= "Date: {$booking['booking_date']}\n";
         $message .= "Time: {$booking['booking_time']}\n";
-        $message .= "Amount: ₹{$booking['total_amount']}\n";
-        $message .= "Payment: " . ($booking['payment_status'] === 'cash' ? 'Pay at Spa' : 'Online Payment') . "\n\n";
+        $message .= "Amount: ₹{$booking['total_amount']}\n\n";
         $message .= "Thank you for choosing our spa!\n";
         
         $headers = "From: noreply@spa.com\r\n";
@@ -599,14 +553,6 @@ function initializeDatabase() {
             email VARCHAR(100) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )",
-        
-        "CREATE TABLE IF NOT EXISTS settings (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            setting_key VARCHAR(100) UNIQUE NOT NULL,
-            setting_value TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )",
         
         "CREATE TABLE IF NOT EXISTS users (
@@ -673,7 +619,7 @@ function initializeDatabase() {
             message TEXT,
             total_amount DECIMAL(10,2) NOT NULL,
             payment_id VARCHAR(255),
-            payment_status ENUM('pending', 'completed', 'failed', 'cash') DEFAULT 'pending',
+            payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
             status ENUM('pending', 'confirmed', 'cancelled', 'completed') DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (therapist_id) REFERENCES therapists(id) ON DELETE CASCADE
@@ -727,24 +673,6 @@ function insertDefaultData() {
         $stmt->execute();
         if ($stmt->fetch()['count'] == 0) {
             createDefaultAdmin();
-        }
-    } catch (Exception $e) {}
-    
-    // Insert default settings
-    try {
-        $stmt = $db->prepare("SELECT COUNT(*) as count FROM settings");
-        $stmt->execute();
-        if ($stmt->fetch()['count'] == 0) {
-            $defaultSettings = [
-                ['payment_enabled', '1'],
-                ['razorpay_key_id', RAZORPAY_KEY_ID],
-                ['razorpay_key_secret', RAZORPAY_KEY_SECRET]
-            ];
-            
-            $stmt = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
-            foreach ($defaultSettings as $setting) {
-                $stmt->execute($setting);
-            }
         }
     } catch (Exception $e) {}
     
